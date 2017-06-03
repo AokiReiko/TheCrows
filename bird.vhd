@@ -22,12 +22,14 @@ signal bird_x, hand_x: std_logic_vector(14 downto 0);
 signal bird_y, bird_vy, hand_y: std_logic_vector(13 downto 0);
 signal is_dead, tmp_x, tmp_y: std_logic;
 
-constant x_max: integer := 528;
-constant y_max: integer := 314;
+constant x_max: integer := 640;
+constant y_max: integer := 480;
 
 begin
-	random_x_out <= (random_x * random_x + 3 * random_x + 47) mod x_max;
-	random_y_out <= (random_y * random_y + 5 * random_y + 67) mod y_max;
+	--random_x_out <= (random_x * random_x + 3 * random_x + 47) mod x_max;
+	--random_y_out <= (random_y * random_y + 5 * random_y + 67) mod y_max;
+	random_x_out <= (random_x*3) mod x_max;
+	random_y_out <= (random_y*5) mod y_max;
 	process(init, hand_pos, bird_pos, bird_v)
 	begin
 		if init = '0' then
@@ -54,7 +56,12 @@ begin
 			bird_x <= conv_std_logic_vector(random_x, 10) & "00000";
 			bird_y <= conv_std_logic_vector(random_y, 9) & "00000";
 			bird_pos2 <= bird_x & bird_y;
-			bird_v2 <= "000000001100000" & ("11111101000000");
+			-- bird_v2 <= "000000001100000" & ("11111101000000");
+			if bird_x <= x_max / 2 then
+				bird_v2 <= "000000001100000" & ("11111101000000");
+			else
+				bird_v2 <= "111111110100000" & ("11111101000000");
+			end if;
 			bird_dead <= '0';
 		end if;
 	end process;

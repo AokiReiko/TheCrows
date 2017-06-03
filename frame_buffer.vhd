@@ -162,7 +162,7 @@ END SYN;
 -- Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 -- Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 -- Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
--- Retrieval info: PRIVATE: MEMSIZE NUMERIC "524288"
+-- Retrieval info: PRIVATE: MEMSIZE NUMERIC "262144"
 -- Retrieval info: PRIVATE: MEM_IN_BITS NUMERIC "0"
 -- Retrieval info: PRIVATE: MIFfilename STRING ""
 -- Retrieval info: PRIVATE: OPERATION_MODE NUMERIC "2"
@@ -173,7 +173,7 @@ END SYN;
 -- Retrieval info: PRIVATE: READ_DURING_WRITE_MODE_PORT_A NUMERIC "3"
 -- Retrieval info: PRIVATE: READ_DURING_WRITE_MODE_PORT_B NUMERIC "3"
 -- Retrieval info: PRIVATE: REGdata NUMERIC "1"
--- Retrieval info: PRIVATE: REGq NUMERIC "1"
+-- Retrieval info: PRIVATE: REGq NUMERIC "0"
 -- Retrieval info: PRIVATE: REGrdaddress NUMERIC "1"
 -- Retrieval info: PRIVATE: REGrren NUMERIC "1"
 -- Retrieval info: PRIVATE: REGwraddress NUMERIC "1"
@@ -182,10 +182,10 @@ END SYN;
 -- Retrieval info: PRIVATE: USE_DIFF_CLKEN NUMERIC "0"
 -- Retrieval info: PRIVATE: UseDPRAM NUMERIC "1"
 -- Retrieval info: PRIVATE: VarWidth NUMERIC "0"
--- Retrieval info: PRIVATE: WIDTH_READ_A NUMERIC "16"
--- Retrieval info: PRIVATE: WIDTH_READ_B NUMERIC "16"
--- Retrieval info: PRIVATE: WIDTH_WRITE_A NUMERIC "16"
--- Retrieval info: PRIVATE: WIDTH_WRITE_B NUMERIC "16"
+-- Retrieval info: PRIVATE: WIDTH_READ_A NUMERIC "8"
+-- Retrieval info: PRIVATE: WIDTH_READ_B NUMERIC "8"
+-- Retrieval info: PRIVATE: WIDTH_WRITE_A NUMERIC "8"
+-- Retrieval info: PRIVATE: WIDTH_WRITE_B NUMERIC "8"
 -- Retrieval info: PRIVATE: WRADDR_ACLR_B NUMERIC "0"
 -- Retrieval info: PRIVATE: WRADDR_REG_B NUMERIC "0"
 -- Retrieval info: PRIVATE: WRCTRL_ACLR_B NUMERIC "0"
@@ -207,11 +207,11 @@ END SYN;
 -- Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "FALSE"
 -- Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "15"
 -- Retrieval info: CONSTANT: WIDTHAD_B NUMERIC "15"
--- Retrieval info: CONSTANT: WIDTH_A NUMERIC "16"
--- Retrieval info: CONSTANT: WIDTH_B NUMERIC "16"
+-- Retrieval info: CONSTANT: WIDTH_A NUMERIC "8"
+-- Retrieval info: CONSTANT: WIDTH_B NUMERIC "8"
 -- Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
--- Retrieval info: USED_PORT: data 0 0 16 0 INPUT NODEFVAL "data[15..0]"
--- Retrieval info: USED_PORT: q 0 0 16 0 OUTPUT NODEFVAL "q[15..0]"
+-- Retrieval info: USED_PORT: data 0 0 8 0 INPUT NODEFVAL "data[7..0]"
+-- Retrieval info: USED_PORT: q 0 0 8 0 OUTPUT NODEFVAL "q[7..0]"
 -- Retrieval info: USED_PORT: rdaddress 0 0 15 0 INPUT NODEFVAL "rdaddress[14..0]"
 -- Retrieval info: USED_PORT: rdclock 0 0 0 0 INPUT NODEFVAL "rdclock"
 -- Retrieval info: USED_PORT: wraddress 0 0 15 0 INPUT NODEFVAL "wraddress[14..0]"
@@ -221,9 +221,9 @@ END SYN;
 -- Retrieval info: CONNECT: @address_b 0 0 15 0 rdaddress 0 0 15 0
 -- Retrieval info: CONNECT: @clock0 0 0 0 0 wrclock 0 0 0 0
 -- Retrieval info: CONNECT: @clock1 0 0 0 0 rdclock 0 0 0 0
--- Retrieval info: CONNECT: @data_a 0 0 16 0 data 0 0 16 0
+-- Retrieval info: CONNECT: @data_a 0 0 8 0 data 0 0 8 0
 -- Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
--- Retrieval info: CONNECT: q 0 0 16 0 @q_b 0 0 16 0
+-- Retrieval info: CONNECT: q 0 0 8 0 @q_b 0 0 8 0
 -- Retrieval info: GEN_FILE: TYPE_NORMAL frame_buffer.vhd TRUE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL frame_buffer.inc FALSE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL frame_buffer.cmp TRUE

@@ -12,6 +12,11 @@ use ieee.std_logic_unsigned.all;
 entity vga is
     Port ( 
       clk50       : in  STD_LOGIC;
+      vga_red     : out STD_LOGIC_VECTOR(2 downto 0);
+      vga_green   : out STD_LOGIC_VECTOR(2 downto 0);
+      vga_blue    : out STD_LOGIC_VECTOR(2 downto 0);
+      vga_hsync   : out STD_LOGIC;
+      vga_vsync   : out STD_LOGIC;
       frame_addr  : out STD_LOGIC_VECTOR(14 downto 0);
       frame_pixel : in  STD_LOGIC_VECTOR(15 downto 0);
 		h_output : out std_logic_vector(9 downto 0);
@@ -95,55 +100,72 @@ begin
 --				else
 --					t_blue <= "000";
 --				end if;
-				if (frame_pixel(15 downto 13) >= "101") then
+				if (frame_pixel(15 downto 13) >= "110") then
 					t_red <= "111";
-				elsif (frame_pixel(15 downto 13) <= "010") then
+				elsif (frame_pixel(15 downto 13) <= "011") then
 					t_red <= "001";
 				else
 					t_red <= "000";
 				end if;
-				if (frame_pixel(10 downto 8) >= "101") then
+				if (frame_pixel(10 downto 8) >= "110") then
 					t_green <= "111";
-				elsif (frame_pixel(10 downto 8) <= "010") then
+				elsif (frame_pixel(10 downto 8) <= "011") then
 					t_green <= "001";
 				else
 					t_green <= "000";
 				end if;
-				if (frame_pixel(4 downto 2) >= "101") then
+				if (frame_pixel(4 downto 2) >= "110") then
 					t_blue <= "111";
-				elsif (frame_pixel(4 downto 2) <= "010") then
+				elsif (frame_pixel(4 downto 2) <= "011") then
 					t_blue <= "001";
 				else
 					t_blue <= "000";
 				end if;
 				
 				if (t_red = "111") and (t_green = "111") and (t_blue = "111") then
+					vga_red <= "111";
+					vga_green <= "000";
+					vga_blue <= "000";
 					if (hCounter - index_low >= "00000001000") and (hCounter - index_low <= "00000010000") then
-						
 						index_low <= (others => '0');
 						up_index <= hCounter;
+					else
+
 					end if;
 					index_high <= hCounter;
 				elsif (t_red = "001") and (t_green = "001") and (t_blue = "001") then
+					vga_red <= "000";
+					vga_green <= "000";
+					vga_blue <= "111";
 					if (hCounter - index_high >= "00000001000") and (hCounter - index_high <= "00000010000") then
 						index_high <= (others => '0');
-						if hCounter - up_index <= "00000111111" then
-						
+						if hCounter - up_index <= "00010000000" then
+							vga_red <= "111";
+							vga_green <= "111";
+							vga_blue <= "111";
 							if flag = '0' then
 								h_ans <= hCounter;
 								v_ans <= vCounter;
 								flag <= '1';
 								h_output <= std_logic_vector(h_ans)(10 downto 1);
 								v_output <= std_logic_vector(v_ans)(9 downto 1);
+								vga_blue <= "000";
 							end if;
 						end if;
-					
+					else
+						
 					end if;
 					index_low <= hCounter;
-				
+				else
+					vga_red <= "000";
+					vga_green <= "000";
+					vga_blue <= "000";
 				end if;
 				
-         
+         else
+            vga_red   <= (others => '0');
+            vga_green <= (others => '0');
+            vga_blue  <= (others => '0');
          end if;
          if vCounter  >= vRez then
             address <= (others => '0');
@@ -165,8 +187,19 @@ begin
             end if;
          end if;
    
+         -- Are we in the hSync pulse? (one has been added to include frame_buffer_latency)
+         if hCounter > hStartSync and hCounter <= hEndSync then
+            vga_hSync <= hsync_active;
+         else
+            vga_hSync <= not hsync_active;
+         end if;
 
-        
+         -- Are we in the vSync pulse?
+         if vCounter >= vStartSync and vCounter < vEndSync then
+            vga_vSync <= vsync_active;
+         else
+            vga_vSync <= not vsync_active;
+         end if;
       end if;
    end process;
 end Behavioral;

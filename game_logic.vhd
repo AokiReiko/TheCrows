@@ -15,14 +15,15 @@ signal t: integer := 0;
 signal clk_50hz: std_logic := '0';
 signal bird1_pos, bird1_v, bird2_pos, bird2_v, bird1_pos_out, bird1_v_out, bird2_pos_out, bird2_v_out: std_logic_vector(28 downto 0);
 signal bird1_init, bird2_init: std_logic := '1';
-signal bird1_dead, bird2_dead, v_change: std_logic;
-signal random_x1, random_y1, random_x1_out, random_y1_out: integer := 1;
-signal random_x2, random_y2, random_x2_out, random_y2_out: integer := 1;
+signal bird1_dead, bird2_dead, bird1_touch, bird2_touch, v_change: std_logic := '0';
+signal random_x1, random_y1, random_x1_out, random_y1_out: integer := 26;
+signal random_x2, random_y2, random_x2_out, random_y2_out: integer := 56;
+signal score: integer := 1000;
 
 signal interval: integer := 0;
 
-constant x_max: natural := 528;
-constant y_max: natural := 314;
+constant x_max: natural := 640;
+constant y_max: natural := 480;
 
 component bird
 	port(
@@ -50,7 +51,7 @@ begin
 				random_y_out => random_y1_out,
 				bird_pos2 => bird1_pos_out,
 				bird_v2 => bird1_v_out,
-				bird_dead => bird1_dead
+				bird_dead => bird1_touch
 			);
 	part2: bird port map(
 				init => bird2_init,
@@ -64,7 +65,7 @@ begin
 				random_y_out => random_y2_out,
 				bird_pos2 => bird2_pos_out,
 				bird_v2 => bird2_v_out,
-				bird_dead => bird2_dead
+				bird_dead => bird2_touch
 			);
 	process(clk_50)
 	begin
@@ -87,16 +88,28 @@ begin
 			random_y1 <= random_y1_out;
 			random_x2 <= random_x2_out;
 			random_y2 <= random_y2_out;
+			
+			bird1_dead <= bird1_dead or bird1_touch;
+			bird2_dead <= bird2_dead or bird2_touch;
+			
 			bird1 <= bird1_pos(28 downto 19) & bird1_pos(13 downto 5) & bird1_dead;
 			bird2 <= bird2_pos(28 downto 19) & bird1_pos(13 downto 5) & bird2_dead;
 			
 			if bird1_pos(28 downto 19) >= x_max or bird1_pos(13 downto 5) >= y_max then
 				bird1_init <= '1';
+				if bird1_dead = '0' then
+					score <= score - 50;
+				end if;
+				bird1_dead <= '0';
 			else
 				bird1_init <= '0';
 			end if;
 			if bird2_pos(28 downto 19) >= x_max or bird2_pos(13 downto 5) >= y_max then
 				bird2_init <= '1';
+				if bird2_dead = '0' then
+					score <= score - 50;
+				end if;
+				bird2_dead <= '0';
 			else
 				bird2_init <= '0';
 			end if;
