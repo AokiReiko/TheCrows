@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone II"
 set_global_assignment -name DEVICE EP2C70F672C8
-set_global_assignment -name TOP_LEVEL_ENTITY ov7670_top
+set_global_assignment -name TOP_LEVEL_ENTITY thecrows
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "20:37:27  MAY 15, 2017"
 set_global_assignment -name LAST_QUARTUS_VERSION 13.0
@@ -49,9 +49,6 @@ set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
 set_global_assignment -name EDA_NETLIST_WRITER_OUTPUT_DIR simulation/modelsim -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
 set_location_assignment PIN_N2 -to clk100
 set_location_assignment PIN_U1 -to vga_blue[2]
@@ -124,6 +121,7 @@ set_location_assignment PIN_AF20 -to d6[3]
 set_location_assignment PIN_AE20 -to d6[2]
 set_location_assignment PIN_AB20 -to d6[1]
 set_location_assignment PIN_AC20 -to d6[0]
+set_global_assignment -name VHDL_FILE thecrows.vhd
 set_global_assignment -name VHDL_FILE vga_rom.vhd
 set_global_assignment -name VHDL_FILE VGA_640480.vhd
 set_global_assignment -name VHDL_FILE hand_rom.vhd
@@ -133,7 +131,6 @@ set_global_assignment -name MIF_FILE bird.mif
 set_global_assignment -name VHDL_FILE back_rom.vhd
 set_global_assignment -name MIF_FILE back.mif
 set_global_assignment -name QIP_FILE frame_buffer.qip
-set_global_assignment -name VHDL_FILE ov7670_top.vhd
 set_global_assignment -name VHDL_FILE debounce.vhd
 set_global_assignment -name VHDL_FILE ov7670_capture.vhd
 set_global_assignment -name VHDL_FILE ov7670_controller.vhd
@@ -143,4 +140,7 @@ set_global_assignment -name VHDL_FILE vga.vhd
 set_global_assignment -name VHDL_FILE decode.vhd
 set_global_assignment -name VHDL_FILE game_logic.vhd
 set_global_assignment -name VHDL_FILE bird.vhd
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
