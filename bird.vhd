@@ -13,12 +13,13 @@ entity bird is
 		random_x_out, random_y_out: out integer;
 		bird_pos2: out std_logic_vector(28 downto 0);
 		bird_v2: out std_logic_vector(28 downto 0);
-		bird_dead: out std_logic
+		bird_dead: out std_logic;
+		touch_flag: in std_logic
 	);
 end bird;
 
 architecture arch of bird is
-signal bird_x, hand_x: std_logic_vector(14 downto 0);
+signal bird_x, bird_vx, hand_x: std_logic_vector(14 downto 0);
 signal bird_y, bird_vy, hand_y: std_logic_vector(13 downto 0);
 signal is_dead, tmp_x, tmp_y: std_logic;
 
@@ -48,7 +49,7 @@ begin
 			else
 				tmp_y <= '0';
 			end if;
-			is_dead <= tmp_x and tmp_y;
+			is_dead <= tmp_x and tmp_y and touch_flag;
 			bird_pos2 <= bird_x & bird_y;
 			if is_dead = '1' then
 				bird_v2 <= "000000000000000" & "11111111110000";
@@ -61,10 +62,11 @@ begin
 			bird_y <= conv_std_logic_vector(random_y, 9) & "00000";
 			bird_pos2 <= bird_x & bird_y;
 			-- bird_v2 <= "000000001100000" & ("11111101000000");
+			bird_vx <= "0000000" & bird_x(8 downto 5) & "0000";
 			if random_x <= x_max / 2 then
-				bird_v2 <= "000000001100000" & ("11111101000000");
+				bird_v2 <= bird_vx & ("11111101000000");
 			else
-				bird_v2 <= "111111110100000" & ("11111101000000");
+				bird_v2 <= ("000000000000000" - bird_vx) & ("11111101000000");
 			end if;
 			bird_dead <= '0';
 		end if;

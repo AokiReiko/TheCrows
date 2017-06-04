@@ -6,6 +6,7 @@ entity game_logic is
 	port(
 		clk_50: in std_logic;
 		hand_pos: in std_logic_vector(18 downto 0);
+		size: in std_logic_vector(9 downto 0);
 		bird1, bird2: out std_logic_vector(19 downto 0);
 		score_out: out integer
 	);
@@ -20,6 +21,8 @@ signal bird1_dead, bird2_dead, bird1_touch, bird2_touch, v_change: std_logic := 
 signal random_x1, random_y1, random_x1_out, random_y1_out: integer := 26;
 signal random_x2, random_y2, random_x2_out, random_y2_out: integer := 56;
 signal score: integer := 1000;
+signal last_size: std_logic_vector(9 downto 0);
+signal touch_flag: std_logic;
 
 signal interval: integer := 0;
 
@@ -36,7 +39,8 @@ component bird
 		random_x_out, random_y_out: out integer;
 		bird_pos2: out std_logic_vector(28 downto 0);
 		bird_v2: out std_logic_vector(28 downto 0);
-		bird_dead: out std_logic
+		bird_dead: out std_logic;
+		touch_flag: in std_logic
 	);
 	end component;
 begin
@@ -52,7 +56,8 @@ begin
 				random_y_out => random_y1_out,
 				bird_pos2 => bird1_pos_out,
 				bird_v2 => bird1_v_out,
-				bird_dead => bird1_touch
+				bird_dead => bird1_touch,
+				touch_flag => '1'
 			);
 	part2: bird port map(
 				init => bird2_init,
@@ -66,7 +71,8 @@ begin
 				random_y_out => random_y2_out,
 				bird_pos2 => bird2_pos_out,
 				bird_v2 => bird2_v_out,
-				bird_dead => bird2_touch
+				bird_dead => bird2_touch,
+				touch_flag => '1'
 			);
 	process(clk_50)
 	begin
@@ -89,6 +95,13 @@ begin
 			random_y1 <= random_y1_out;
 			random_x2 <= random_x2_out;
 			random_y2 <= random_y2_out;
+			
+			if size >= last_size and size - last_size >= "0000001000" then
+				touch_flag <= '1';
+			else
+				touch_flag <= '0';
+			end if;
+			last_size <= size;
 			
 			if bird1_dead = '0' and bird1_touch = '1' then
 				score <= score + 75;

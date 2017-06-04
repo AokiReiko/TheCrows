@@ -118,6 +118,7 @@ architecture Behavioral of thecrows is
 	port(
 		clk_50: in std_logic;
 		hand_pos: in std_logic_vector(18 downto 0);
+		size: in std_logic_vector(9 downto 0);
 		bird1, bird2: out std_logic_vector(19 downto 0);
 		score_out: out integer
 	);
@@ -181,15 +182,15 @@ part_vga: vga_rom port map(
 		size_output => size_output
    );
 	part_d1: decode port map(
-		key => "0" & h_output(3 downto 1),
+		key => "0" & size_output(3 downto 1),
 		display => d1
 	);
 	part_d2: decode port map(
-		key => "0" & h_output(6 downto 4),
+		key => "0" & size_output(6 downto 4),
 		display => d2
 	);
 	part_d3: decode port map(
-		key => "0" & h_output(9 downto 7),
+		key => "0" & size_output(9 downto 7),
 		display => d3
 	);
 	part_d4: decode port map(
@@ -208,6 +209,7 @@ part_vga: vga_rom port map(
 	part_logic: game_logic port map(
 		clk_50 => clk50,
 		hand_pos => h_output & v_output,
+		size => size_output,
 		bird1 => bird1,
 		bird2 => bird2,
 		score_out => score

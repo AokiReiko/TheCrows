@@ -148,8 +148,8 @@ begin
 								h_ans <= hCounter;
 								v_ans <= vCounter;
 								flag <= '1';
-								h_output <= std_logic_vector(h_ans)(9 downto 0) - "0000001000"; -- /1056 * 1280
-								v_output <= std_logic_vector(v_ans)(8 downto 0) - "000000100"; -- /628 * 960
+								h_output <= "1001000000" - std_logic_vector(h_ans)(9 downto 0); -- /1056 * 1280
+								v_output <= std_logic_vector(v_ans)(8 downto 0) - "000010000"; -- /628 * 960
 								size_output <= std_logic_vector(hCounter - up_index)(9 downto 0);
 								vga_blue <= "000";
 							end if;
