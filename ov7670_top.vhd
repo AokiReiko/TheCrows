@@ -109,7 +109,8 @@ architecture Behavioral of ov7670_top is
       frame_addr : OUT std_logic_vector(14 downto 0);
       frame_pixel : IN std_logic_vector(15 downto 0);
 		h_output: out std_logic_vector(9 downto 0);
-		v_output: out std_logic_vector(8 downto 0)
+		v_output: out std_logic_vector(8 downto 0);
+		size_output: out std_logic_vector(9 downto 0)
       );
    END COMPONENT;
 	
@@ -117,7 +118,8 @@ architecture Behavioral of ov7670_top is
 	port(
 		clk_50: in std_logic;
 		hand_pos: in std_logic_vector(18 downto 0);
-		bird1, bird2: out std_logic_vector(19 downto 0)
+		bird1, bird2: out std_logic_vector(19 downto 0);
+		score_out: out integer
 	);
 	end component;
    
@@ -129,7 +131,7 @@ architecture Behavioral of ov7670_top is
    signal capture_we    : std_logic_vector(0 downto 0);
    signal resend : std_logic;
    signal config_finished : std_logic;
-	signal h_output : std_logic_vector(9 downto 0);
+	signal h_output, size_output : std_logic_vector(9 downto 0);
 	signal v_output : std_logic_vector(8 downto 0);
 	signal bird1, bird2 : std_logic_vector(19 downto 0);
 	signal clk50			: std_logic;
@@ -139,6 +141,8 @@ architecture Behavioral of ov7670_top is
    signal vga_blue_1     : STD_LOGIC_VECTOR(2 downto 0);
    signal vga_hsync_1    : STD_LOGIC;
    signal vga_vsync_1    : STD_LOGIC;
+	
+	signal score : integer;
 begin
 	process(clk100) 
 	begin
@@ -153,7 +157,7 @@ btn_debounce: debounce PORT MAP(
    );
 part_vga: vga_rom port map(
 	reset => '1',
-	clk_0 => clk50,
+	clk_0 => clk100,
 	r => vga_red,
 	g => vga_green,
 	b => vga_blue,
@@ -173,7 +177,8 @@ part_vga: vga_rom port map(
       frame_addr  => frame_addr,
       frame_pixel => frame_pixel,
 		h_output => h_output,
-		v_output => v_output
+		v_output => v_output,
+		size_output => size_output
    );
 	part_d1: decode port map(
 		key => "0" & h_output(3 downto 1),
@@ -204,7 +209,8 @@ part_vga: vga_rom port map(
 		clk_50 => clk50,
 		hand_pos => h_output & v_output,
 		bird1 => bird1,
-		bird2 => bird2
+		bird2 => bird2,
+		score_out => score
 	);
 
 fb : frame_buffer

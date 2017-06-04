@@ -38,26 +38,30 @@ begin
 			hand_x <= hand_pos(28 downto 14);
 			hand_y <= hand_pos(13 downto 0);
 			bird_vy <= bird_v(13 downto 0) + "00000000000110";
-			if (bird_x <= hand_x and hand_x(14 downto 6) - bird_x(14 downto 6) <= "0000000100") or (bird_x >= hand_x and bird_x(14 downto 6) - hand_x(14 downto 6) <= "0000000100") then
+			if (bird_x <= hand_x and hand_x(14 downto 6) - bird_x(14 downto 6) <= "0000011000") or (bird_x >= hand_x and bird_x(14 downto 6) - hand_x(14 downto 6) <= "0000011000") then
 				tmp_x <= '1';
 			else
 				tmp_x <= '0';
 			end if;
-			if (bird_y <= hand_y and hand_y(13 downto 6) - bird_y(13 downto 6) <= "000000100") or (bird_y >= hand_y and bird_y(13 downto 6) - hand_y(13 downto 6) <= "000000100") then
+			if (bird_y <= hand_y and hand_y(13 downto 6) - bird_y(13 downto 6) <= "000011000") or (bird_y >= hand_y and bird_y(13 downto 6) - hand_y(13 downto 6) <= "000011000") then
 				tmp_y <= '1';
 			else
 				tmp_y <= '0';
 			end if;
 			is_dead <= tmp_x and tmp_y;
 			bird_pos2 <= bird_x & bird_y;
-			bird_v2 <= bird_v(28 downto 14) & bird_vy;
+			if is_dead = '1' then
+				bird_v2 <= "000000000000000" & "11111111110000";
+			else
+				bird_v2 <= bird_v(28 downto 14) & bird_vy;
+			end if;
 			bird_dead <= is_dead;
 		else
 			bird_x <= conv_std_logic_vector(random_x, 10) & "00000";
 			bird_y <= conv_std_logic_vector(random_y, 9) & "00000";
 			bird_pos2 <= bird_x & bird_y;
 			-- bird_v2 <= "000000001100000" & ("11111101000000");
-			if bird_x <= x_max / 2 then
+			if random_x <= x_max / 2 then
 				bird_v2 <= "000000001100000" & ("11111101000000");
 			else
 				bird_v2 <= "111111110100000" & ("11111101000000");

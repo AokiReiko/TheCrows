@@ -6,7 +6,8 @@ entity game_logic is
 	port(
 		clk_50: in std_logic;
 		hand_pos: in std_logic_vector(18 downto 0);
-		bird1, bird2: out std_logic_vector(19 downto 0)
+		bird1, bird2: out std_logic_vector(19 downto 0);
+		score_out: out integer
 	);
 end game_logic;
 
@@ -89,16 +90,25 @@ begin
 			random_x2 <= random_x2_out;
 			random_y2 <= random_y2_out;
 			
+			if bird1_dead = '0' and bird1_touch = '1' then
+				score <= score + 75;
+				score_out <= score;
+			end if;
+			if bird2_dead = '0' and bird2_touch = '1' then
+				score <= score + 75;
+				score_out <= score;
+			end if;
 			bird1_dead <= bird1_dead or bird1_touch;
 			bird2_dead <= bird2_dead or bird2_touch;
 			
 			bird1 <= bird1_pos(28 downto 19) & bird1_pos(13 downto 5) & bird1_dead;
-			bird2 <= bird2_pos(28 downto 19) & bird1_pos(13 downto 5) & bird2_dead;
+			bird2 <= bird2_pos(28 downto 19) & bird2_pos(13 downto 5) & bird2_dead;
 			
 			if bird1_pos(28 downto 19) >= x_max or bird1_pos(13 downto 5) >= y_max then
 				bird1_init <= '1';
 				if bird1_dead = '0' then
 					score <= score - 50;
+					score_out <= score;
 				end if;
 				bird1_dead <= '0';
 			else
@@ -108,6 +118,7 @@ begin
 				bird2_init <= '1';
 				if bird2_dead = '0' then
 					score <= score - 50;
+					score_out <= score;
 				end if;
 				bird2_dead <= '0';
 			else

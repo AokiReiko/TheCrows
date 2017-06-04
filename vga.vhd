@@ -20,7 +20,8 @@ entity vga is
       frame_addr  : out STD_LOGIC_VECTOR(14 downto 0);
       frame_pixel : in  STD_LOGIC_VECTOR(15 downto 0);
 		h_output : out std_logic_vector(9 downto 0);
-		v_output : out std_logic_vector(8 downto 0)
+		v_output : out std_logic_vector(8 downto 0);
+		size_output : out std_logic_vector(9 downto 0)
     );
 end vga;
 
@@ -100,23 +101,23 @@ begin
 --				else
 --					t_blue <= "000";
 --				end if;
-				if (frame_pixel(15 downto 13) >= "110") then
+				if (frame_pixel(15 downto 13) >= "111") then
 					t_red <= "111";
-				elsif (frame_pixel(15 downto 13) <= "011") then
+				elsif (frame_pixel(15 downto 13) <= "100") then
 					t_red <= "001";
 				else
 					t_red <= "000";
 				end if;
-				if (frame_pixel(10 downto 8) >= "110") then
+				if (frame_pixel(10 downto 8) >= "111") then
 					t_green <= "111";
-				elsif (frame_pixel(10 downto 8) <= "011") then
+				elsif (frame_pixel(10 downto 8) <= "100") then
 					t_green <= "001";
 				else
 					t_green <= "000";
 				end if;
-				if (frame_pixel(4 downto 2) >= "110") then
+				if (frame_pixel(4 downto 2) >= "111") then
 					t_blue <= "111";
-				elsif (frame_pixel(4 downto 2) <= "011") then
+				elsif (frame_pixel(4 downto 2) <= "100") then
 					t_blue <= "001";
 				else
 					t_blue <= "000";
@@ -147,8 +148,9 @@ begin
 								h_ans <= hCounter;
 								v_ans <= vCounter;
 								flag <= '1';
-								h_output <= std_logic_vector(h_ans)(10 downto 1);
-								v_output <= std_logic_vector(v_ans)(9 downto 1);
+								h_output <= std_logic_vector(h_ans)(9 downto 0) - "0000001000"; -- /1056 * 1280
+								v_output <= std_logic_vector(v_ans)(8 downto 0) - "000000100"; -- /628 * 960
+								size_output <= std_logic_vector(hCounter - up_index)(9 downto 0);
 								vga_blue <= "000";
 							end if;
 						end if;
