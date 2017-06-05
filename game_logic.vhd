@@ -6,7 +6,9 @@ entity game_logic is
 	port(
 		clk_50: in std_logic;
 		hand_pos: in std_logic_vector(18 downto 0);
-		bird1, bird2: out std_logic_vector(19 downto 0)
+		size: in std_logic_vector(9 downto 0);
+		bird1, bird2: out std_logic_vector(19 downto 0);
+		score_out: out integer
 	);
 end game_logic;
 
@@ -15,14 +17,17 @@ signal t: integer := 0;
 signal clk_50hz: std_logic := '0';
 signal bird1_pos, bird1_v, bird2_pos, bird2_v, bird1_pos_out, bird1_v_out, bird2_pos_out, bird2_v_out: std_logic_vector(28 downto 0);
 signal bird1_init, bird2_init: std_logic := '1';
-signal bird1_dead, bird2_dead, v_change: std_logic;
-signal random_x1, random_y1, random_x1_out, random_y1_out: integer := 1;
-signal random_x2, random_y2, random_x2_out, random_y2_out: integer := 1;
+signal bird1_dead, bird2_dead, bird1_touch, bird2_touch, v_change: std_logic := '0';
+signal random_x1, random_y1, random_x1_out, random_y1_out: integer := 26;
+signal random_x2, random_y2, random_x2_out, random_y2_out: integer := 56;
+signal score: integer := 100;
+signal last_size: std_logic_vector(9 downto 0);
+signal touch_flag: std_logic;
 
 signal interval: integer := 0;
 
-constant x_max: natural := 528;
-constant y_max: natural := 314;
+constant x_max: natural := 640;
+constant y_max: natural := 480;
 
 component bird
 	port(
@@ -34,7 +39,8 @@ component bird
 		random_x_out, random_y_out: out integer;
 		bird_pos2: out std_logic_vector(28 downto 0);
 		bird_v2: out std_logic_vector(28 downto 0);
-		bird_dead: out std_logic
+		bird_dead: out std_logic;
+		touch_flag: in std_logic
 	);
 	end component;
 begin
@@ -50,7 +56,8 @@ begin
 				random_y_out => random_y1_out,
 				bird_pos2 => bird1_pos_out,
 				bird_v2 => bird1_v_out,
-				bird_dead => bird1_dead
+				bird_dead => bird1_touch,
+				touch_flag => '1'
 			);
 	part2: bird port map(
 				init => bird2_init,
@@ -64,7 +71,8 @@ begin
 				random_y_out => random_y2_out,
 				bird_pos2 => bird2_pos_out,
 				bird_v2 => bird2_v_out,
-				bird_dead => bird2_dead
+				bird_dead => bird2_touch,
+				touch_flag => '1'
 			);
 	process(clk_50)
 	begin
@@ -87,16 +95,45 @@ begin
 			random_y1 <= random_y1_out;
 			random_x2 <= random_x2_out;
 			random_y2 <= random_y2_out;
+			
+			if size >= last_size and size - last_size >= "0000001000" then
+				touch_flag <= '1';
+			else
+				touch_flag <= '0';
+			end if;
+			last_size <= size;
+			
+			if bird1_dead = '0' and bird1_touch = '1' and score <= 256 then
+				score <= score + 8;
+				score_out <= score;
+			end if;
+			if bird2_dead = '0' and bird2_touch = '1' and score <= 256 then
+				score <= score + 8;
+				score_out <= score;
+			end if;
+			bird1_dead <= bird1_dead or bird1_touch;
+			bird2_dead <= bird2_dead or bird2_touch;
+			
 			bird1 <= bird1_pos(28 downto 19) & bird1_pos(13 downto 5) & bird1_dead;
-			bird2 <= bird2_pos(28 downto 19) & bird1_pos(13 downto 5) & bird2_dead;
+			bird2 <= bird2_pos(28 downto 19) & bird2_pos(13 downto 5) & bird2_dead;
 			
 			if bird1_pos(28 downto 19) >= x_max or bird1_pos(13 downto 5) >= y_max then
 				bird1_init <= '1';
+				if bird1_dead = '0' and score >= 0 then
+					score <= score - 5;
+					score_out <= score;
+				end if;
+				bird1_dead <= '0';
 			else
 				bird1_init <= '0';
 			end if;
 			if bird2_pos(28 downto 19) >= x_max or bird2_pos(13 downto 5) >= y_max then
 				bird2_init <= '1';
+				if bird2_dead = '0' and score >= 0 then
+					score <= score - 5;
+					score_out <= score;
+				end if;
+				bird2_dead <= '0';
 			else
 				bird2_init <= '0';
 			end if;
