@@ -29,8 +29,8 @@ constant y_max: integer := 480;
 begin
 	--random_x_out <= (random_x * random_x + 3 * random_x + 47) mod x_max;
 	--random_y_out <= (random_y * random_y + 5 * random_y + 67) mod y_max;
-	random_x_out <= (random_x*3) mod x_max;
-	random_y_out <= (random_y*5) mod y_max;
+	random_x_out <= (random_x*3 + conv_integer(bird_pos(3 downto 0))) mod x_max;
+	random_y_out <= (random_y*5 + conv_integer(bird_pos(3 downto 0))) mod y_max;
 	process(init, hand_pos, bird_pos, bird_v)
 	begin
 		if init = '0' then
@@ -62,11 +62,18 @@ begin
 			bird_y <= conv_std_logic_vector(random_y, 9) & "00000";
 			bird_pos2 <= bird_x & bird_y;
 			-- bird_v2 <= "000000001100000" & ("11111101000000");
-			bird_vx <= "0000000" & bird_x(8 downto 5) & "0000";
-			if random_x <= x_max / 2 then
-				bird_v2 <= bird_vx & ("11111101000000");
+			bird_vx <= "0000000" & bird_x(8 downto 6) & "10000";
+			if random_y <= y_max / 4 then
+				bird_vy <= "00000000000000";
+			elsif random_y <= y_max / 2 then
+				bird_vy <= "11111111000000";
 			else
-				bird_v2 <= ("000000000000000" - bird_vx) & ("11111101000000");
+				bird_vy <= "11111101000000";
+			end if;
+			if random_x <= x_max / 2 then
+				bird_v2 <= bird_vx & bird_vy;
+			else
+				bird_v2 <= ("000000000000000" - bird_vx) & bird_vy;
 			end if;
 			bird_dead <= '0';
 		end if;
