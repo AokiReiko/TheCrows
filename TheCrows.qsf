@@ -1,0 +1,117 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 1991-2013 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus II 64-Bit
+# Version 13.0.0 Build 156 04/24/2013 SJ Full Version
+# Date created = 12:09:31  May 27, 2017
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		TheCrows_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus II software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+set_global_assignment -name FAMILY "Cyclone II"
+set_global_assignment -name DEVICE EP2C70F672C8
+set_global_assignment -name TOP_LEVEL_ENTITY TheCrows
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:09:31  MAY 27, 2017"
+set_global_assignment -name LAST_QUARTUS_VERSION 13.0
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
+set_global_assignment -name EDA_NETLIST_WRITER_OUTPUT_DIR simulation/modelsim -section_id eda_simulation
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_location_assignment PIN_N2 -to clk100
+set_location_assignment PIN_AA25 -to d1[6]
+set_location_assignment PIN_C17 -to OV7670_D[7]
+set_location_assignment PIN_C19 -to OV7670_D[6]
+set_location_assignment PIN_D17 -to OV7670_D[5]
+set_location_assignment PIN_A20 -to OV7670_D[4]
+set_location_assignment PIN_A19 -to OV7670_D[3]
+set_location_assignment PIN_B20 -to OV7670_D[2]
+set_location_assignment PIN_B19 -to OV7670_D[1]
+set_location_assignment PIN_E20 -to OV7670_D[0]
+set_location_assignment PIN_B18 -to OV7670_HREF
+set_location_assignment PIN_D19 -to OV7670_PCLK
+set_location_assignment PIN_B17 -to OV7670_PWDN
+set_location_assignment PIN_D15 -to OV7670_SIOC
+set_location_assignment PIN_A17 -to OV7670_SIOD
+set_location_assignment PIN_D14 -to OV7670_VSYNC
+set_location_assignment PIN_D20 -to OV7670_XCLK
+set_location_assignment PIN_U1 -to vga_blue[2]
+set_location_assignment PIN_U2 -to vga_blue[1]
+set_location_assignment PIN_T4 -to vga_blue[0]
+set_location_assignment PIN_T3 -to vga_green[2]
+set_location_assignment PIN_T2 -to vga_green[1]
+set_location_assignment PIN_R5 -to vga_green[0]
+set_location_assignment PIN_U3 -to vga_hsync
+set_location_assignment PIN_R4 -to vga_red[2]
+set_location_assignment PIN_R3 -to vga_red[1]
+set_location_assignment PIN_R2 -to vga_red[0]
+set_location_assignment PIN_U4 -to vga_vsync
+set_location_assignment PIN_AC6 -to btn
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name MIF_FILE life.mif
+set_global_assignment -name MIF_FILE anchor.mif
+set_global_assignment -name VHDL_FILE anchor_rom.vhd
+set_global_assignment -name SOURCE_FILE frame_buffer.cmp
+set_global_assignment -name VHDL_FILE render_info.vhd
+set_global_assignment -name VHDL_FILE dead_rom.vhd
+set_global_assignment -name VHDL_FILE life_rom.vhd
+set_global_assignment -name VHDL_FILE camera2identify.vhd
+set_global_assignment -name MIF_FILE dead.mif
+set_global_assignment -name VHDL_FILE identify.vhd
+set_global_assignment -name MIF_FILE hand.mif
+set_global_assignment -name MIF_FILE bird.mif
+set_global_assignment -name MIF_FILE back.mif
+set_global_assignment -name VHDL_FILE TheCrows.vhd
+set_global_assignment -name VHDL_FILE debounce.vhd
+set_global_assignment -name VHDL_FILE ov7670_capture.vhd
+set_global_assignment -name VHDL_FILE 0v7670_controller.vhd
+set_global_assignment -name VHDL_FILE ov7670_register.vhd
+set_global_assignment -name VHDL_FILE i2c_sender.vhd
+set_global_assignment -name VHDL_FILE game_logic.vhd
+set_global_assignment -name VHDL_FILE bird.vhd
+set_global_assignment -name VHDL_FILE vga_rom.vhd
+set_global_assignment -name VHDL_FILE vga_640480.vhd
+set_global_assignment -name VHDL_FILE hand_rom.vhd
+set_global_assignment -name VHDL_FILE bird_rom.vhd
+set_global_assignment -name VHDL_FILE back_rom.vhd
+set_global_assignment -name QIP_FILE frame_buffer.qip
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
