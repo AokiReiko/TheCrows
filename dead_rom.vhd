@@ -39,17 +39,17 @@ USE ieee.std_logic_1164.all;
 LIBRARY altera_mf;
 USE altera_mf.all;
 
-ENTITY back_rom IS
+ENTITY dead_rom IS
 	PORT
 	(
-		address		: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
+		address		: IN STD_LOGIC_VECTOR (12 DOWNTO 0);
 		clock		: IN STD_LOGIC ;
 		q		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
 	);
-END back_rom;
+END dead_rom;
 
 
-ARCHITECTURE SYN OF back_rom IS
+ARCHITECTURE SYN OF dead_rom IS
 
 	SIGNAL sub_wire0	: STD_LOGIC_VECTOR (7 DOWNTO 0);
 
@@ -73,7 +73,7 @@ ARCHITECTURE SYN OF back_rom IS
 	);
 	PORT (
 			clock0	: IN STD_LOGIC ;
-			address_a	: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
+			address_a	: IN STD_LOGIC_VECTOR (12 DOWNTO 0);
 			q_a	: OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
 	);
 	END COMPONENT;
@@ -83,15 +83,15 @@ BEGIN
 	GENERIC MAP (
 		clock_enable_input_a => "BYPASS",
 		clock_enable_output_a => "BYPASS",
-		init_file => "back.mif",
+		init_file => "dead.mif",
 		intended_device_family => "Cyclone II",
 		lpm_hint => "ENABLE_RUNTIME_MOD=NO",
 		lpm_type => "altsyncram",
-		numwords_a => 16384,
+		numwords_a => 8192,
 		operation_mode => "ROM",
 		outdata_aclr_a => "NONE",
 		outdata_reg_a => "UNREGISTERED",
-		widthad_a => 14,
+		widthad_a => 13,
 		width_a => 8,
 		width_byteena_a => 8
 	)
