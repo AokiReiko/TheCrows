@@ -18,7 +18,7 @@
 #
 # Quartus II 64-Bit
 # Version 13.0.0 Build 156 04/24/2013 SJ Full Version
-# Date created = 12:09:31  May 27, 2017
+# Date created = 21:09:20  June 08, 2017
 #
 # -------------------------------------------------------------------------- #
 #
@@ -40,21 +40,37 @@ set_global_assignment -name FAMILY "Cyclone II"
 set_global_assignment -name DEVICE EP2C70F672C8
 set_global_assignment -name TOP_LEVEL_ENTITY TheCrows
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.0
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:09:31  MAY 27, 2017"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "21:09:20  JUNE 08, 2017"
 set_global_assignment -name LAST_QUARTUS_VERSION 13.0
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
-set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
-set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
-set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
-set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
-set_global_assignment -name EDA_NETLIST_WRITER_OUTPUT_DIR simulation/modelsim -section_id eda_simulation
-set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name SOURCE_FILE frame_buffer.cmp
+set_global_assignment -name QIP_FILE frame_buffer.qip
+set_global_assignment -name VHDL_FILE vga_rom.vhd
+set_global_assignment -name VHDL_FILE vga_640480.vhd
+set_global_assignment -name VHDL_FILE TheCrows.vhd
+set_global_assignment -name VHDL_FILE render_info.vhd
+set_global_assignment -name VHDL_FILE ov7670_register.vhd
+set_global_assignment -name VHDL_FILE ov7670_capture.vhd
+set_global_assignment -name VHDL_FILE life_rom.vhd
+set_global_assignment -name VHDL_FILE identify.vhd
+set_global_assignment -name VHDL_FILE i2c_sender.vhd
+set_global_assignment -name VHDL_FILE hand_rom.vhd
+set_global_assignment -name VHDL_FILE game_logic.vhd
+set_global_assignment -name VHDL_FILE frame_buffer.vhd
+set_global_assignment -name VHDL_FILE debounce.vhd
+set_global_assignment -name VHDL_FILE dead_rom.vhd
+set_global_assignment -name VHDL_FILE camera2identify.vhd
+set_global_assignment -name VHDL_FILE bird_rom.vhd
+set_global_assignment -name VHDL_FILE bird.vhd
+set_global_assignment -name VHDL_FILE back_rom.vhd
+set_global_assignment -name VHDL_FILE anchor_rom.vhd
+set_global_assignment -name VHDL_FILE 0v7670_controller.vhd
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
 set_location_assignment PIN_N2 -to clk100
-set_location_assignment PIN_AA25 -to d1[6]
 set_location_assignment PIN_C17 -to OV7670_D[7]
 set_location_assignment PIN_C19 -to OV7670_D[6]
 set_location_assignment PIN_D17 -to OV7670_D[5]
@@ -70,6 +86,61 @@ set_location_assignment PIN_D15 -to OV7670_SIOC
 set_location_assignment PIN_A17 -to OV7670_SIOD
 set_location_assignment PIN_D14 -to OV7670_VSYNC
 set_location_assignment PIN_D20 -to OV7670_XCLK
+set_location_assignment PIN_AE23 -to sram_addr[19]
+set_location_assignment PIN_AF23 -to sram_addr[18]
+set_location_assignment PIN_Y23 -to sram_addr[17]
+set_location_assignment PIN_Y24 -to sram_addr[16]
+set_location_assignment PIN_AA25 -to sram_addr[15]
+set_location_assignment PIN_AA26 -to sram_addr[14]
+set_location_assignment PIN_V22 -to sram_addr[13]
+set_location_assignment PIN_AB26 -to sram_addr[12]
+set_location_assignment PIN_AB25 -to sram_addr[11]
+set_location_assignment PIN_AB23 -to sram_addr[10]
+set_location_assignment PIN_AB24 -to sram_addr[9]
+set_location_assignment PIN_AA23 -to sram_addr[8]
+set_location_assignment PIN_AA24 -to sram_addr[7]
+set_location_assignment PIN_Y22 -to sram_addr[6]
+set_location_assignment PIN_AC24 -to sram_addr[5]
+set_location_assignment PIN_AD24 -to sram_addr[4]
+set_location_assignment PIN_AC26 -to sram_addr[3]
+set_location_assignment PIN_AC23 -to sram_addr[2]
+set_location_assignment PIN_N23 -to sram_addr[1]
+set_location_assignment PIN_N24 -to sram_addr[0]
+set_location_assignment PIN_AB21 -to sram_ce
+set_location_assignment PIN_M25 -to sram_data[31]
+set_location_assignment PIN_M24 -to sram_data[30]
+set_location_assignment PIN_M23 -to sram_data[29]
+set_location_assignment PIN_M22 -to sram_data[28]
+set_location_assignment PIN_K23 -to sram_data[27]
+set_location_assignment PIN_K22 -to sram_data[26]
+set_location_assignment PIN_K24 -to sram_data[25]
+set_location_assignment PIN_L23 -to sram_data[24]
+set_location_assignment PIN_L24 -to sram_data[23]
+set_location_assignment PIN_P23 -to sram_data[22]
+set_location_assignment PIN_P24 -to sram_data[21]
+set_location_assignment PIN_R25 -to sram_data[20]
+set_location_assignment PIN_R24 -to sram_data[19]
+set_location_assignment PIN_T22 -to sram_data[18]
+set_location_assignment PIN_T23 -to sram_data[17]
+set_location_assignment PIN_T24 -to sram_data[16]
+set_location_assignment PIN_T25 -to sram_data[15]
+set_location_assignment PIN_U26 -to sram_data[14]
+set_location_assignment PIN_U25 -to sram_data[13]
+set_location_assignment PIN_U23 -to sram_data[12]
+set_location_assignment PIN_U24 -to sram_data[11]
+set_location_assignment PIN_V26 -to sram_data[10]
+set_location_assignment PIN_V25 -to sram_data[9]
+set_location_assignment PIN_V24 -to sram_data[8]
+set_location_assignment PIN_V23 -to sram_data[7]
+set_location_assignment PIN_W26 -to sram_data[6]
+set_location_assignment PIN_W25 -to sram_data[5]
+set_location_assignment PIN_W23 -to sram_data[4]
+set_location_assignment PIN_W24 -to sram_data[3]
+set_location_assignment PIN_U22 -to sram_data[2]
+set_location_assignment PIN_Y25 -to sram_data[1]
+set_location_assignment PIN_Y26 -to sram_data[0]
+set_location_assignment PIN_AD25 -to sram_oe
+set_location_assignment PIN_AC25 -to sram_we
 set_location_assignment PIN_U1 -to vga_blue[2]
 set_location_assignment PIN_U2 -to vga_blue[1]
 set_location_assignment PIN_T4 -to vga_blue[0]
@@ -81,37 +152,4 @@ set_location_assignment PIN_R4 -to vga_red[2]
 set_location_assignment PIN_R3 -to vga_red[1]
 set_location_assignment PIN_R2 -to vga_red[0]
 set_location_assignment PIN_U4 -to vga_vsync
-set_location_assignment PIN_AC6 -to btn
-set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
-set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
-set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
-set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name MIF_FILE life.mif
-set_global_assignment -name MIF_FILE anchor.mif
-set_global_assignment -name VHDL_FILE anchor_rom.vhd
-set_global_assignment -name SOURCE_FILE frame_buffer.cmp
-set_global_assignment -name VHDL_FILE render_info.vhd
-set_global_assignment -name VHDL_FILE dead_rom.vhd
-set_global_assignment -name VHDL_FILE life_rom.vhd
-set_global_assignment -name VHDL_FILE camera2identify.vhd
-set_global_assignment -name MIF_FILE dead.mif
-set_global_assignment -name VHDL_FILE identify.vhd
-set_global_assignment -name MIF_FILE hand.mif
-set_global_assignment -name MIF_FILE bird.mif
-set_global_assignment -name MIF_FILE back.mif
-set_global_assignment -name VHDL_FILE TheCrows.vhd
-set_global_assignment -name VHDL_FILE debounce.vhd
-set_global_assignment -name VHDL_FILE ov7670_capture.vhd
-set_global_assignment -name VHDL_FILE 0v7670_controller.vhd
-set_global_assignment -name VHDL_FILE ov7670_register.vhd
-set_global_assignment -name VHDL_FILE i2c_sender.vhd
-set_global_assignment -name VHDL_FILE game_logic.vhd
-set_global_assignment -name VHDL_FILE bird.vhd
-set_global_assignment -name VHDL_FILE vga_rom.vhd
-set_global_assignment -name VHDL_FILE vga_640480.vhd
-set_global_assignment -name VHDL_FILE hand_rom.vhd
-set_global_assignment -name VHDL_FILE bird_rom.vhd
-set_global_assignment -name VHDL_FILE back_rom.vhd
-set_global_assignment -name QIP_FILE frame_buffer.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

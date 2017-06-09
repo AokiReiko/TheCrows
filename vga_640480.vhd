@@ -15,7 +15,15 @@ entity vga640480 is
 			bird1: 					in std_logic_vector(19 downto 0);
 			bird2: 					in std_logic_vector(19 downto 0);
 			hand: 					in std_logic_vector(18 downto 0);
-			score:					in integer
+			is_hold: 				in std_logic;
+			score:					in integer;
+			hold_bird1, hold_bird2: in std_logic;
+			touch_flag: in std_logic;
+			game_state: in std_logic_vector(1 downto 0);--10 lose 11 win
+
+			sram_addr : out std_logic_vector(19 downto 0);
+			sram_data : in std_logic_vector(31 downto 0)
+
 	  );
 end vga640480;
 
@@ -33,12 +41,13 @@ architecture behavior of vga640480 is
 	signal bird2_pos		: std_logic_vector(19 downto 0):="00010111110000111110";
 	signal hand_pos		: std_logic_vector(18 downto 0):="0010111110000111110";
 	signal addr_back_s	:std_logic_vector(13 downto 0):=(others=>'0');
+	signal address : std_logic_vector(19 downto 0);
+
 begin
-obj_address.address_back <= addr_back_s;
 --bird1_pos <= "01001111110000111111";
 --bird2_pos <= "00100111110001010110";
 --hand_pos  <= "0010011111000110110";
- 
+ sram_addr <= address;
 ----------------------------------------------------------------------
 process(clk25)	
 	variable num: integer;
@@ -96,6 +105,22 @@ end process;
 	  	if reset='0' then
 	   		vector_y <= (others=>'0');
 	  	elsif clk25'event and clk25='1' then
+	  		if (vector_x < 640 and vector_x(0) = '1') then
+	  			address <= address + 1;
+	  		end if;
+	  		if (vector_y > 480) then
+				case game_state is
+				when "01" => 
+					address <= std_logic_vector(to_unsigned(0,address'length));
+				when "00" =>
+					address <= std_logic_vector(to_unsigned(153600,address'length));
+				when "10" => 
+					address <= std_logic_vector(to_unsigned(307200,address'length));
+				when "11" => 
+					address <= std_logic_vector(to_unsigned(image_address(3),address'length));
+				end case;
+	  			
+	  		end if;
 	   		if vector_x=799 then
 					vector_x <= (others =>'0');
 					
@@ -173,6 +198,7 @@ end process;
 	
 	variable life_dx: std_LOGIC_vector(9 downto 0);
 	variable life_dy: std_LOGIC_vector(8 downto 0);
+	variable life_anchor: std_logic_vector(8 downto 0);
 	variable det1: integer;
 	variable det2: integer;
 	
@@ -190,30 +216,50 @@ end process;
 			
 			life_dx := vector_x - 50;
 			life_dy := vector_y - 100;
+			life_anchor := vector_y - score;
+
 			if vector_x > 640 then
 				g1  <= "000";
 				b1	<= "000";
 				r1	<= "000";
 			else
 				--background
-				
-				if (vector_x >= 160 and vector_x < 640 and vector_y < 480) then
-					r1  <= obj_data.q_back(7 downto 5);
-					g1	<= obj_data.q_back(4 downto 2);
-					b1	<= obj_data.q_back(1 downto 0) & "1";
+				if (vector_x(0)='0') then
+					r1 <= sram_data(9 downto 7);
+					g1 <= sram_data(6 downto 4);
+					b1 <= sram_data(3 downto 1);
 				else
-					g1  <= "000";
-					b1	<= "000";
-					r1	<= "000";
+					r1 <= sram_data(25 downto 23);
+					g1 <= sram_data(22 downto 20);
+					b1 <= sram_data(19 downto 17);
 				end if;
-				
+
+
+				if game_state="01" then
 				if (vector_x >= 50 and vector_x < 114 and vector_y >= 100 and vector_y < 356) then
 					obj_address.address_life <= life_dy(7 downto 0) & life_dx(5 downto 0);
-					if obj_data.q_life /= 123 then
-						r1  <= obj_data.q_life(7 downto 5);
-					g1	<= obj_data.q_life(4 downto 2);
-					b1	<= obj_data.q_life(1 downto 0) & "1";
+					
+
+					if obj_data.q_life /= 119 then
+						if (vector_y > score + 100) then
+							r1  <= obj_data.q_life(7 downto 5);
+							g1	<= obj_data.q_life(4 downto 2);
+							b1	<= obj_data.q_life(1 downto 0) & "1";
+						else
+							g1  <= obj_data.q_life(7 downto 5);
+							r1	<= obj_data.q_life(4 downto 2);
+							b1	<= obj_data.q_life(1 downto 0) & "1";
+						end if;
 					end if;
+					if vector_y - 100 < score + 8 and vector_y - 100 >= score then
+						obj_address.address_anchor <= life_anchor(2 downto 0) & life_dx(5 downto 0);
+						if obj_data.q_anchor /= 123 then
+							r1  <= obj_data.q_anchor(7 downto 5);
+							g1	<= obj_data.q_anchor(4 downto 2);
+							b1	<= obj_data.q_anchor(1 downto 0) & "1";
+						end if;
+					end if;
+
 				end if;
 				--first bird
 				if bird1(0) = '0' and vector_y > bird1_pos(9 downto 1) and bird1_dy <= 63 
@@ -243,19 +289,25 @@ end process;
 
 					obj_address.address_hand <= hand_state & hand_dy(5 downto 0) & hand_dx(5 downto 0);
 					obj_address.address_dead <= hand_state(0) & hand_dy(5 downto 0) & hand_dx(5 downto 0);
-					if bird1_pos(0)='1' or bird2_pos(0)='1' then
+					if is_hold='1' then
 						if obj_data.q_dead /= "00011100" then
 							r1 <= obj_data.q_dead(7 downto 5);				  	
 							g1 <= obj_data.q_dead(4 downto 2);
 							b1 <= obj_data.q_dead(1 downto 0)&"1";
 						end if;
 					else
+
 						if obj_data.q_hand /= "10011100" then
-							r1 <= obj_data.q_hand(7 downto 5);				  	
+							if is_hold='0' then
+								r1 <= obj_data.q_hand(7 downto 5);
+							else
+								r1 <= "111";
+							end if;
 							g1 <= obj_data.q_hand(4 downto 2);
 							b1 <= obj_data.q_hand(1 downto 0)&"1";
 						end if;
 					end if;
+			end if;
 			end if;
 		end if;
 		end if;

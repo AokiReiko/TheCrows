@@ -8,6 +8,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity TheCrows is
     Port ( 
+
+    	sram_addr	: out std_logic_vector(19 downto 0);
+    	sram_data	: in std_logic_vector(31 downto 0);
+    	sram_ce		: out std_logic;
+    	sram_oe		: out std_logic;
+    	sram_we		: out std_logic;
+
       clk100        : in   STD_LOGIC;
       OV7670_SIOC  : out   STD_LOGIC;
       OV7670_SIOD  : inout STD_LOGIC;
@@ -25,7 +32,7 @@ entity TheCrows is
       vga_blue     : out   STD_LOGIC_VECTOR(2 downto 0);
       vga_hsync    : out   STD_LOGIC;
       vga_vsync    : out   STD_LOGIC;
-		
+	
       btn           : in    STD_LOGIC
     );
 end TheCrows;
@@ -39,20 +46,19 @@ architecture Behavioral of TheCrows is
 		bird1: in std_logic_vector(19 downto 0);
 		bird2: in std_logic_vector(19 downto 0);
 		hand: in std_logic_vector(18 downto 0);
-		score: in integer
+		is_hold: in std_logic;
+		score: in integer;
+		hold_bird1, hold_bird2: in std_logic;
+		touch_flag: in std_logic;
+		game_state: in std_logic_vector(1 downto 0);
+		
+		sram_addr : out std_logic_vector(19 downto 0);
+		sram_data : in std_logic_vector(31 downto 0)
+
 	);
 	end component;
 
-	
-	component game_logic
-	port(
-		clk_50: in std_logic;
-		hand_pos: in std_logic_vector(18 downto 0);
-		size: in std_logic_vector(9 downto 0);
-		bird1, bird2: out std_logic_vector(19 downto 0);
-		score_out: out integer
-	);
-	end component;
+
    
 
   component camera2identify is
@@ -77,7 +83,20 @@ architecture Behavioral of TheCrows is
 
 end component;
    
-	
+component game_logic
+	port(
+		clk_50: in std_logic;
+		hand_pos: in std_logic_vector(18 downto 0);
+		size: in std_logic_vector(9 downto 0);
+		bird1, bird2: out std_logic_vector(19 downto 0);
+		is_hold: out std_logic;
+		score_out: out integer;
+		
+		hold_bird1, hold_bird2: out std_logic;
+		touch_flag_out: out std_logic;
+		game_state_out: out std_logic_vector(1 downto 0)
+	);
+end component;
 	signal h_output, size_output : std_logic_vector(9 downto 0);
 	signal v_output : std_logic_vector(8 downto 0);
 	signal bird1, bird2 : std_logic_vector(19 downto 0);
@@ -88,9 +107,18 @@ end component;
    signal vga_blue_1     : STD_LOGIC_VECTOR(2 downto 0);
    signal vga_hsync_1    : STD_LOGIC;
    signal vga_vsync_1    : STD_LOGIC;
+   signal is_hold:		std_logic;
 	
 	signal score : integer;
+	signal hold_bird1, hold_bird2: std_logic;
+	signal touch_flag: std_logic;
+	signal game_state: std_logic_vector(1 downto 0);
+
 begin
+	sram_ce <= '0';
+	sram_oe <= '0';
+	sram_we <= '1';
+
 	process(clk100) 
 	begin
 		if (rising_edge(clk100)) then
@@ -110,7 +138,15 @@ display: vga_rom
 		bird1 => bird1,
 		bird2 => bird2,
 		hand => h_output & v_output,
-		score =>score
+		is_hold=>is_hold,
+		score =>score,
+
+		hold_bird1 => hold_bird1,
+		hold_bird2 => hold_bird2,
+		touch_flag => touch_flag,
+		game_state => game_state,
+		sram_addr => sram_addr,
+		sram_data => sram_data
 	);	
 		
 	part_logic: game_logic port map(
@@ -119,7 +155,13 @@ display: vga_rom
 		size => size_output,
 		bird1 => bird1,
 		bird2 => bird2,
-		score_out => score
+		is_hold => is_hold,
+		score_out => score,
+
+		hold_bird1 => hold_bird1,
+		hold_bird2 => hold_bird2,
+		touch_flag_out => touch_flag,
+		game_state_out => game_state
 	);
 
 input: camera2identify port map(

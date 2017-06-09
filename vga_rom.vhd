@@ -12,7 +12,15 @@ port(
 	bird1: in std_logic_vector(19 downto 0);
 	bird2: in std_logic_vector(19 downto 0);
 	hand: in std_logic_vector(18 downto 0);
-	score: in integer
+	is_hold: in std_logic;
+	score: in integer;
+
+	hold_bird1, hold_bird2: in std_logic;
+	touch_flag: in std_logic;
+	game_state: in std_logic_vector(1 downto 0);
+
+	sram_addr : out std_logic_vector(19 downto 0);
+	sram_data : in std_logic_vector(31 downto 0)
 );
 end vga_rom;
 
@@ -29,7 +37,14 @@ component vga640480 is
 			bird1: 					in std_logic_vector(19 downto 0);
 			bird2: 					in std_logic_vector(19 downto 0);
 			hand: 					in std_logic_vector(18 downto 0);
-			score:					in integer
+			is_hold: 				in std_logic;
+			score:					in integer;
+			hold_bird1, hold_bird2: in std_logic;
+			touch_flag: in std_logic;
+			game_state: in std_logic_vector(1 downto 0);
+
+			sram_addr : out std_logic_vector(19 downto 0);
+			sram_data : in std_logic_vector(31 downto 0)
 	  );
 end component;
 
@@ -66,10 +81,11 @@ component hand_rom IS
 		q		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
 	);
 END component;
-component back_rom IS
+
+component anchor_rom IS
 	PORT
 	(
-		address		: IN STD_LOGIC_VECTOR (13 DOWNTO 0);
+		address		: IN STD_LOGIC_VECTOR (8 DOWNTO 0);
 		clock		: IN STD_LOGIC ;
 		q		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
 	);
@@ -105,7 +121,17 @@ u1: vga640480 port map(
 						bird1 => bird1,
 						bird2 => bird2,
 						hand => hand,
-						score => score
+						is_hold => is_hold,
+						score => score,
+
+						hold_bird1 => hold_bird1,
+					    hold_bird2 => hold_bird2,
+						touch_flag => touch_flag,
+						game_state => game_state,
+						
+
+						sram_addr => sram_addr,
+						sram_data => sram_data
 					);
 u2: bird_rom port map(	
 						address=>obj_address.address_bird, 
@@ -117,11 +143,7 @@ u3: hand_rom port map(
 						clock=>clk50, 
 						q=>obj_data.q_hand
 					);
-u4: back_rom port map(	
-						address=>obj_address.address_back, 
-						clock=>clk50, 
-						q=>obj_data.q_back
-					);
+						
 u5: dead_rom port map(	
 						address=>obj_address.address_dead, 
 						clock=>clk50, 
@@ -131,5 +153,10 @@ u6: life_rom port map(
 						address=>obj_address.address_life, 
 						clock=>clk50, 
 						q=>obj_data.q_life
+					);
+u7: anchor_rom port map(	
+						address=>obj_address.address_anchor, 
+						clock=>clk50, 
+						q=>obj_data.q_anchor
 					);
 end vga_rom;
