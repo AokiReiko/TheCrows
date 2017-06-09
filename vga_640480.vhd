@@ -298,7 +298,7 @@ end process;
 					else
 
 						if obj_data.q_hand /= "10011100" then
-							if is_hold='0' then
+							if touch_flag='0' then
 								r1 <= obj_data.q_hand(7 downto 5);
 							else
 								r1 <= "111";

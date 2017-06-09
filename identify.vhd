@@ -1,4 +1,3 @@
-
 ----------------------------------------------------------------------------------
 -- Engineer: Mike Field <hamster@snap.net.nz>
 -- 
@@ -13,6 +12,7 @@ use ieee.std_logic_unsigned.all;
 entity identify is
     Port ( 
       clk50       : in  STD_LOGIC;
+      
       frame_addr  : out STD_LOGIC_VECTOR(14 downto 0);
       frame_pixel : in  STD_LOGIC_VECTOR(15 downto 0);
 		h_output : out std_logic_vector(9 downto 0);
@@ -22,9 +22,10 @@ entity identify is
 end identify;
 
 architecture Behavioral of identify is
-
    -- Timing constants
+   constant hRez       : natural := 800;--800
    constant vRez       : natural := 600;--600
+
    constant hMaxCount  : natural := 1056;--1056
    constant hStartSync : natural := 840;--840
    constant hEndSync   : natural := 968;--968
@@ -45,6 +46,7 @@ architecture Behavioral of identify is
 	signal h_ans: unsigned(10 downto 0);
 	signal v_ans: unsigned(9 downto 0);
 	signal flag: std_logic := '0';
+	signal total_num, total_size_output: unsigned(12 downto 0) := (others => '0');
 begin
    frame_addr <= std_logic_vector(address(16 downto 2));
    process(clk50)
@@ -58,7 +60,10 @@ begin
       if rising_edge(clk50) then
          -- Count the lines and rows      
 			if hCounter = "00000000000" and vCounter = "00000000000" then
+				size_output <= std_logic_vector(total_size_output / total_num)(9 downto 0);
 				flag <= '0';
+				total_num <= (others => '0');
+				total_size_output <= (others => '0');
 			end if;
          if hCounter = hMaxCount-1 then
             hCounter <= (others => '0');
@@ -72,7 +77,7 @@ begin
          end if;
 			
          if blank = '0' then
-            t_red   <= frame_pixel(15 downto 13);--frame_pixel(15) & frame_pixel(13)& frame_pixel(11);
+				t_red   <= frame_pixel(15 downto 13);--frame_pixel(15) & frame_pixel(13)& frame_pixel(11);
             t_green <= frame_pixel(10 downto 8);--frame_pixel(10)&frame_pixel(8)& frame_pixel(5);
             t_blue  <= frame_pixel(4 downto 2);--frame_pixel(4)&frame_pixel(2)&frame_pixel(0);
 --				if (frame_pixel(15 downto 13) >= "100") and (last3_pixel(15 downto 13) <= "010") then
@@ -119,7 +124,6 @@ begin
 				end if;
 				
 				if (t_red = "111") and (t_green = "111") and (t_blue = "111") then
-					
 					if (hCounter - index_low >= "00000001000") and (hCounter - index_low <= "00000010000") then
 						index_low <= (others => '0');
 						up_index <= hCounter;
@@ -128,26 +132,25 @@ begin
 					end if;
 					index_high <= hCounter;
 				elsif (t_red = "001") and (t_green = "001") and (t_blue = "001") then
-					
 					if (hCounter - index_high >= "00000001000") and (hCounter - index_high <= "00000010000") then
 						index_high <= (others => '0');
 						if hCounter - up_index <= "00010000000" then
-							
 							if flag = '0' then
 								h_ans <= hCounter;
 								v_ans <= vCounter;
 								flag <= '1';
 								h_output <= "1001000000" - std_logic_vector(h_ans)(9 downto 0); -- /1056 * 1280
 								v_output <= std_logic_vector(v_ans)(8 downto 0) - "000010000"; -- /628 * 960
-								size_output <= std_logic_vector(hCounter - up_index)(9 downto 0);
 							end if;
+							total_size_output <= total_size_output + (hCounter - up_index);
+							total_num <= total_num + 1;
 						end if;
 					else
 						
 					end if;
 					index_low <= hCounter;
-					
 				end if;
+			
          end if;
          if vCounter  >= vRez then
             address <= (others => '0');
@@ -171,8 +174,7 @@ begin
    
          -- Are we in the hSync pulse? (one has been added to include frame_buffer_latency)
          
-
-       
       end if;
    end process;
 end Behavioral;
+
