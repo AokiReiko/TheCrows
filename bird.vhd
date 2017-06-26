@@ -5,7 +5,7 @@ use ieee.std_logic_arith.all;
 
 entity bird is
 	port(
-		init, v_change: in std_logic;
+		init, v_change: in std_logic; -- init：是否重置
 		hand_pos: in std_logic_vector(28 downto 0);
 		bird_pos: in std_logic_vector(28 downto 0);
 		bird_v: in std_logic_vector(28 downto 0);
@@ -33,8 +33,8 @@ begin
 	random_y_out <= (random_y*5) mod y_max;
 	process(init, hand_pos, bird_pos, bird_v)
 	begin
-		if init = '0' then
-			bird_x <= bird_pos(28 downto 14) + bird_v(28 downto 14);
+		if init = '0' then -- 非重置，进行模拟
+			bird_x <= bird_pos(28 downto 14) + bird_v(28 downto 14); -- 更新位置
 			bird_y <= bird_pos(13 downto 0) + bird_v(13 downto 0);
 			hand_x <= hand_pos(28 downto 14);
 			hand_y <= hand_pos(13 downto 0);
@@ -54,10 +54,10 @@ begin
 			if is_dead = '1' then
 				bird_v2 <= "000000000000000" & "11111111110000";
 			else
-				bird_v2 <= bird_v(28 downto 14) & bird_vy;
+				bird_v2 <= bird_v(28 downto 14) & bird_vy; -- 更新速度
 			end if;
 			bird_dead <= is_dead;
-		else
+		else -- 利用随机数重置乌鸦
 			bird_x <= conv_std_logic_vector(random_x, 10) & "00000";
 			if random_y <= 100 then
 				bird_y <= conv_std_logic_vector(random_y+100, 9) & "00000";

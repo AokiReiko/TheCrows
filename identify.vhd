@@ -14,10 +14,10 @@ entity identify is
       clk50       : in  STD_LOGIC;
       
       frame_addr  : out STD_LOGIC_VECTOR(14 downto 0);
-      frame_pixel : in  STD_LOGIC_VECTOR(15 downto 0);
-		h_output : out std_logic_vector(9 downto 0);
-		v_output : out std_logic_vector(8 downto 0);
-		size_output : out std_logic_vector(9 downto 0)
+      frame_pixel : in  STD_LOGIC_VECTOR(15 downto 0); -- 从RAM中读取输入
+		h_output : out std_logic_vector(9 downto 0); -- 识别结果：水平坐标
+		v_output : out std_logic_vector(8 downto 0); -- 识别结果：竖直坐标
+		size_output : out std_logic_vector(9 downto 0) -- 识别结果：大小
     );
 end identify;
 
@@ -60,7 +60,7 @@ begin
       if rising_edge(clk50) then
          -- Count the lines and rows      
 			if hCounter = "00000000000" and vCounter = "00000000000" then
-				size_output <= std_logic_vector(total_size_output / total_num)(9 downto 0);
+				size_output <= std_logic_vector(total_size_output / total_num)(9 downto 0); -- 输出识别所得大小
 				flag <= '0';
 				total_num <= (others => '0');
 				total_size_output <= (others => '0');
@@ -77,9 +77,9 @@ begin
          end if;
 			
          if blank = '0' then
-				t_red   <= frame_pixel(15 downto 13);--frame_pixel(15) & frame_pixel(13)& frame_pixel(11);
-            t_green <= frame_pixel(10 downto 8);--frame_pixel(10)&frame_pixel(8)& frame_pixel(5);
-            t_blue  <= frame_pixel(4 downto 2);--frame_pixel(4)&frame_pixel(2)&frame_pixel(0);
+				t_red   <= frame_pixel(15 downto 13); --红色分量的前3位
+            t_green <= frame_pixel(10 downto 8); --绿色分量的前3位
+            t_blue  <= frame_pixel(4 downto 2); --蓝色分量的前3位
 --				if (frame_pixel(15 downto 13) >= "100") and (last3_pixel(15 downto 13) <= "010") then
 --					t_red <= "111";
 --				elsif (last3_pixel(15 downto 13) >= "100") and (frame_pixel(15 downto 13) <= "010") then
@@ -101,7 +101,7 @@ begin
 --				else
 --					t_blue <= "000";
 --				end if;
-				if (frame_pixel(15 downto 13) >= "111") then
+				if (frame_pixel(15 downto 13) >= "111") then -- 二值化
 					t_red <= "111";
 				elsif (frame_pixel(15 downto 13) <= "100") then
 					t_red <= "001";
@@ -124,7 +124,7 @@ begin
 				end if;
 				
 				if (t_red = "111") and (t_green = "111") and (t_blue = "111") then
-					if (hCounter - index_low >= "00000001000") and (hCounter - index_low <= "00000010000") then
+					if (hCounter - index_low >= "00000001000") and (hCounter - index_low <= "00000010000") then -- 判断边界
 						index_low <= (others => '0');
 						up_index <= hCounter;
 					else
@@ -132,17 +132,17 @@ begin
 					end if;
 					index_high <= hCounter;
 				elsif (t_red = "001") and (t_green = "001") and (t_blue = "001") then
-					if (hCounter - index_high >= "00000001000") and (hCounter - index_high <= "00000010000") then
+					if (hCounter - index_high >= "00000001000") and (hCounter - index_high <= "00000010000") then -- 判断边界
 						index_high <= (others => '0');
-						if hCounter - up_index <= "00010000000" then
+						if hCounter - up_index <= "00010000000" then -- 判断距离
 							if flag = '0' then
-								h_ans <= hCounter;
+								h_ans <= hCounter; -- 识别位置结果
 								v_ans <= vCounter;
 								flag <= '1';
 								h_output <= "1001000000" - std_logic_vector(h_ans)(9 downto 0); -- /1056 * 1280
 								v_output <= std_logic_vector(v_ans)(8 downto 0) - "000010000"; -- /628 * 960
 							end if;
-							total_size_output <= total_size_output + (hCounter - up_index);
+							total_size_output <= total_size_output + (hCounter - up_index); -- 识别大小
 							total_num <= total_num + 1;
 						end if;
 					else
